@@ -10,6 +10,7 @@ import Stack from "@/UI/Stack";
 import Container from "@/UI/Container";
 import { useState } from "react";
 import styled from "styled-components";
+import LoadingPage from "@/components/LoadingPage";
 
 export default function Home() {
 
@@ -20,7 +21,7 @@ export default function Home() {
     queryKey: [`pokemonDetail${params.name}`],
   });
 
-  if (isLoading) return "loading";
+  if (isLoading) return <LoadingPage/>;
   if (isError) return <div>Sorry There was an Error</div>;
 
   const handleImageClick = (image) => {

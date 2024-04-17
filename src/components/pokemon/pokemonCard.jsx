@@ -4,6 +4,7 @@ import APICall from '@/service/APIService';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import PokemonCardSkelton from '../skeletons/pokemonCardSkelton';
 
 export default function PokemonCard({ values, category, ...props }) {
     const [onHover, setOnhover] = useState(false)
@@ -12,7 +13,7 @@ export default function PokemonCard({ values, category, ...props }) {
         queryKey: [`pokemonDetails${values.name}`],
     });
 
-    if (isLoading) return "loading";
+    if (isLoading) return <PokemonCardSkelton />;
 
     if (isError) return <div>Sorry There was an Error</div>;
     if (category) {
@@ -30,19 +31,20 @@ export default function PokemonCard({ values, category, ...props }) {
                 </Card>
             )
         }
+    } else {
+        return (
+            <Card {...props}
+                onMouseOver={() => { setOnhover(true) }}
+                onMouseLeave={() => { setOnhover(false) }}
+            >
+                <img alt={data.name} width={'120px'} height={"120px"}
+                    src={onHover ? `${data.sprites.other.dream_world.front_default}` : `${data.sprites.other.home.front_default}`} />
+                <CardFooter>
+                    <Typography variant='h4'>{data.name.toUpperCase()}</Typography>
+                </CardFooter>
+            </Card>
+        )
     }
-    return (
-        <Card {...props}
-            onMouseOver={() => { setOnhover(true) }}
-            onMouseLeave={() => { setOnhover(false) }}
-        >
-            <img alt={data.name} width={'120px'} height={"120px"}
-                src={onHover ? `${data.sprites.other.dream_world.front_default}` : `${data.sprites.other.home.front_default}`} />
-            <CardFooter>
-                <Typography variant='h4'>{data.name.toUpperCase()}</Typography>
-            </CardFooter>
-        </Card>
-    )
 }
 
 const CardFooter = styled.div`

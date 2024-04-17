@@ -8,6 +8,7 @@ import APICall from "@/service/APIService";
 import { useParams, useRouter } from "next/navigation";
 import Container from "@/UI/Container";
 import { BaseURL } from "@/service/URLS";
+import LoadingPage from "@/components/LoadingPage";
 
 export default function PokemonList() {
   const Router = useRouter()
@@ -17,7 +18,7 @@ export default function PokemonList() {
     queryKey: [`pokemons${params.category}`],
   });
 
-  if (isLoading) return "loading";
+  if (isLoading) return <LoadingPage/>;
   if (isError) return <div>Sorry There was an Error</div>;
   return (
     <Container>

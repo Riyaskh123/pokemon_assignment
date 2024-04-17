@@ -11,11 +11,12 @@ import SearchComponent from "@/UI/SearchInput";
 import { useState } from "react";
 import styled from "styled-components";
 import SearchList from "@/components/categories/searchList";
+import LoadingPage from "@/components/LoadingPage";
 
 export default function Category() {
 
   const [isSearch, setIsSearch] = useState(false)
-  const [searchValue, setSearchValue] = useState()
+  const [searchValue, setSearchValue] = useState("")
   const Router = useRouter()
 
   const { data, isLoading, isError } = useQuery({
@@ -23,29 +24,32 @@ export default function Category() {
     queryKey: ["categories"],
   });
 
-  if (isLoading) return "loading";
+  if (isLoading) return <LoadingPage />;
   if (isError) return <div>Sorry There was an Error</div>;
 
   const handleCategoriesClick = (item) => {
     Router.push(`/categories/${item.name}`, item, { shallow: true });
   }
-  const onSearchChange = (e)=>{
-    console.log(e.target.value);
+  const onSearchChange = (e) => {
+    setSearchValue(e.target.value)
   }
 
-  const handleSearchBlur = ()=>{
-    setIsSearch(false)
+  const handleSearchBlur = () => {
+    if (searchValue.length < 3) {
+      setIsSearch(false)
+    }
   }
   return (
     <Container>
       <Stack direction={"row"} style={{ justifyContent: 'space-between' }}>
         <Typography variant="h3" style={{ marginBottom: '10px' }}>Categories</Typography>
-        <SearchComponent placeholder={"Search Pokemon"} 
-        onChange={onSearchChange}
-        onFocus={() => { setIsSearch(true) }} 
-        onBlur={handleSearchBlur} />
+        <SearchComponent placeholder={"Search Pokemon"}
+          onChange={onSearchChange}
+          onFocus={() => { setIsSearch(true) }}
+          onBlur={handleSearchBlur} 
+          />
         {
-          isSearch && <SearchContainer><SearchList value={searchValue}/></SearchContainer>
+          isSearch && <SearchContainer><SearchList value={searchValue} /></SearchContainer>
         }
       </Stack>
 
